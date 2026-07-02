@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FADL | معرض الأعمال</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&family=Outfit:wght@300;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+    <script>tailwind.config={theme:{extend:{fontFamily:{ar:['Tajawal','sans-serif'],dp:['Outfit','sans-serif']}}}}</script>
+    <style>
+        :root{--bg:#050510;--sf:#0a0a1c;--cd:#0f0f2a;--bd:#1a1a40;--tx:#eaeaf4;--mt:#6a6a90;--cy:#00d4ff;--pk:#ff2d75;--pp:#a855f7;--cyg:0 0 6px #00d4ff,0 0 18px #00d4ff55,0 0 40px #00d4ff22;--pkg:0 0 6px #ff2d75,0 0 18px #ff2d7544}
+        *,*::before,*::after{cursor:none!important;box-sizing:border-box}
+        body{background:var(--bg);color:var(--tx);font-family:'Tajawal',sans-serif;overflow-x:hidden;min-height:100vh;margin:0}
+        .cd{position:fixed;width:6px;height:6px;background:var(--cy);border-radius:50%;pointer-events:none;z-index:99999;box-shadow:var(--cyg);transform:translate(-50%,-50%);opacity:.9}
+        .cr{position:fixed;width:38px;height:38px;border:1.5px solid var(--cy);border-radius:50%;pointer-events:none;z-index:99998;box-shadow:var(--cyg);opacity:.4;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),border-color .3s,opacity .3s,box-shadow .3s}
+        .cr.hv{width:58px;height:58px;border-color:var(--pk);box-shadow:var(--pkg);opacity:.6}
+        .cr.ck{width:28px;height:28px;opacity:.8}
+        @media(hover:none)and(pointer:coarse){.cd,.cr,#pCv{display:none!important}*,*::before,*::after{cursor:auto!important}}
+        #pCv{position:fixed;inset:0;z-index:99996;pointer-events:none}
+
+        /* الانترو */
+        #intro{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity 1s,visibility 1s}
+        #intro.out{opacity:0;visibility:hidden;pointer-events:none}
+        #iCv{position:absolute;inset:0;width:100%;height:100%}
+        .iW{position:relative;z-index:2;text-align:center;padding:0 1rem}
+        .nft{font-family:'Outfit',sans-serif;font-size:clamp(3rem,12vw,9rem);font-weight:900;color:#fff;letter-spacing:clamp(4px,2vw,16px);text-shadow:0 0 4px #fff,0 0 11px #fff,0 0 19px #fff,0 0 40px var(--cy),0 0 80px var(--cy),0 0 120px var(--cy),0 0 160px var(--cy);opacity:0;transform:translateY(40px)scale(.9);transition:opacity .9s,transform .9s cubic-bezier(.23,1,.32,1)}
+        .nft.show{opacity:1;transform:translateY(0)scale(1)}
+
+        /* روابط التواصل في الانترو */
+        .soc-row{display:flex;justify-content:center;gap:clamp(12px,3vw,24px);margin-top:clamp(1rem,3vw,2rem);opacity:0;transform:translateY(15px);transition:opacity .7s .5s,transform .7s .5s;flex-wrap:wrap;padding:0 1rem}
+        .soc-row.show{opacity:1;transform:translateY(0)}
+        .soc-ic{width:clamp(38px,6vw,50px);height:clamp(38px,6vw,50px);border-radius:50%;border:1.5px solid rgba(0,212,255,.4);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:clamp(.9rem,2vw,1.2rem);color:rgba(255,255,255,.7);transition:all .4s ease;position:relative}
+        .soc-ic::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:radial-gradient(circle,rgba(0,212,255,.15),transparent 70%);opacity:0;transition:opacity .4s}
+        .soc-ic:hover{color:#fff;border-color:var(--cy);transform:translateY(-3px)}
+        .soc-ic:hover::before{opacity:1}
+
+        .iln{width:0;height:2px;margin:clamp(1rem,2vw,1.8rem) auto 0;background:linear-gradient(90deg,var(--cy),var(--pk));border-radius:2px;transition:width .8s .9s}
+        .iln.show{width:100px}
+        .ibt{margin-top:clamp(1.2rem,3vw,2rem);padding:14px 40px;background:0 0;border:2px solid var(--cy);color:var(--cy);font-family:'Tajawal',sans-serif;font-size:clamp(.95rem,2vw,1.15rem);font-weight:700;border-radius:50px;opacity:0;transform:translateY(20px);transition:opacity .6s 1.2s,transform .6s 1.2s,background .3s,color .3s,box-shadow .3s;pointer-events:none;position:relative;overflow:hidden}
+        .ibt.show{opacity:1;transform:translateY(0);pointer-events:auto}
+        .ibt::before{content:'';position:absolute;inset:0;background:var(--cy);transform:scaleX(0);transform-origin:right;transition:transform .4s cubic-bezier(.23,1,.32,1);z-index:-1}
+        .ibt:hover::before{transform:scaleX(1);transform-origin:left}
+        .ibt:hover{color:var(--bg);box-shadow:var(--cyg)}
+
+        .bgG{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);background-size:60px 60px}
+        .bgB{position:fixed;border-radius:50%;filter:blur(140px);opacity:.07;pointer-events:none;z-index:0}
+        .bgB.center{transform:translate(-50%,-50%)}
+        #app{opacity:0;transition:opacity .8s .3s;position:relative;z-index:1}
+        #app.show{opacity:1}
+        .osvg{filter:drop-shadow(0 0 3px var(--cy))drop-shadow(0 0 8px rgba(0,212,255,.4));flex-shrink:0}
+        .lnm{font-family:'Outfit',sans-serif;font-size:clamp(1rem,2.5vw,1.3rem);font-weight:900;color:#fff;letter-spacing:3px;text-shadow:0 0 4px var(--cy),0 0 11px var(--cy),0 0 20px var(--cy)}
+        .shd{position:sticky;top:0;z-index:1000;background:rgba(5,5,16,.88);backdrop-filter:blur(24px) saturate(1.2);border-bottom:1px solid var(--bd);padding:.7rem 1rem}
+        .hi{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+        .ha{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+        .hb{padding:7px 14px;border-radius:50px;border:1px solid var(--bd);background:0 0;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:.78rem;font-weight:700;transition:all .3s;display:flex;align-items:center;gap:5px;white-space:nowrap}
+        .hb:hover{border-color:var(--cy);color:var(--cy);box-shadow:0 0 14px #00d4ff28}
+        .hb.adm{border-color:var(--pk);color:var(--pk);box-shadow:0 0 14px #ff2d7528}
+        .hb.dng{border-color:#ff4444;color:#ff4444}.hb.dng:hover{background:rgba(255,68,68,.1)}
+        .fls{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;width:100%;margin-top:.5rem;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none}
+        .fls::-webkit-scrollbar{display:none}
+        .fb{padding:6px 14px;border-radius:50px;border:1px solid var(--bd);background:0 0;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:.8rem;font-weight:700;transition:all .3s;white-space:nowrap;flex-shrink:0}
+        .fb:hover,.fb.ac{border-color:var(--cy);color:var(--cy);box-shadow:0 0 14px #00d4ff28}
+        .wcc{color:var(--mt);font-size:.75rem;margin-right:3px}
+        .gg{display:grid;gap:1rem;padding:1rem;max-width:1400px;margin:0 auto}
+        @media(max-width:399px){.gg{grid-template-columns:1fr;padding:.6rem;gap:.8rem}}
+        @media(min-width:400px)and(max-width:639px){.gg{grid-template-columns:repeat(2,1fr);padding:.8rem;gap:.8rem}}
+        @media(min-width:640px)and(max-width:767px){.gg{grid-template-columns:repeat(2,1fr);padding:1rem;gap:1rem}}
+        @media(min-width:768px)and(max-width:1023px){.gg{grid-template-columns:repeat(3,1fr);padding:1.2rem;gap:1.2rem}}
+        @media(min-width:1024px)and(max-width:1279px){.gg{grid-template-columns:repeat(3,1fr);padding:1.5rem;gap:1.2rem}}
+        @media(min-width:1280px){.gg{grid-template-columns:repeat(4,1fr);padding:2rem;gap:1.4rem}}
+        .wk{position:relative;background:var(--cd);border:1px solid var(--bd);border-radius:14px;overflow:hidden;transition:transform .4s cubic-bezier(.23,1,.32,1),border-color .4s,box-shadow .4s}
+        .wk:hover{transform:translateY(-6px)scale(1.005);border-color:var(--cy);box-shadow:0 10px 30px #00d4ff15,0 0 0 1px #00d4ff30}
+        .cmw{position:relative;overflow:hidden}
+        .cmm{width:100%;aspect-ratio:16/10;object-fit:cover;display:block;background:var(--sf);transition:transform .5s cubic-bezier(.23,1,.32,1)}
+        .wk:hover .cmm{transform:scale(1.05)}
+        .cov{position:absolute;inset:0;background:rgba(5,5,16,.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
+        .wk:hover .cov{opacity:1}
+        .cob{width:44px;height:44px;border-radius:50%;border:2px solid var(--cy);background:rgba(0,212,255,.15);color:var(--cy);font-size:1rem;display:flex;align-items:center;justify-content:center;transform:scale(.7);transition:transform .3s cubic-bezier(.23,1,.32,1)}
+        .wk:hover .cob{transform:scale(1)}
+        .cpi{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:40px;height:40px;background:rgba(0,212,255,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;pointer-events:none;color:var(--bg);font-size:.85rem}
+        .cin{padding:.8rem 1rem .5rem}
+        .ctp{display:inline-block;padding:2px 10px;border-radius:50px;font-size:.68rem;font-weight:700}
+        .ti-image{background:#00d4ff18;color:var(--cy)}.ti-video{background:#ff2d7518;color:var(--pk)}.ti-3d{background:#a855f718;color:var(--pp)}.ti-audio{background:#22c55e18;color:#22c55e}.ti-pdf{background:#f59e0b18;color:#f59e0b}.ti-file{background:#6b728018;color:#9ca3af}
+        .cnm{font-weight:700;font-size:clamp(.85rem,1.5vw,1.05rem);margin:.4rem 0 .2rem;line-height:1.4}
+        .cds{color:var(--mt);font-size:clamp(.72rem,1.2vw,.82rem);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;max-height:calc(1.5em*2);white-space:normal}
+        .cac{display:flex;gap:6px;padding:.5rem 1rem .8rem;flex-wrap:wrap}
+        .cbtn{padding:5px 10px;border-radius:8px;border:1px solid var(--bd);background:0 0;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:.75rem;transition:all .3s;display:flex;align-items:center;gap:4px}
+        .cbtn:hover{border-color:var(--cy);color:var(--cy)}.cbtn.dl:hover{border-color:#ff4444;color:#ff4444}.cbtn.ed:hover{border-color:var(--pp);color:var(--pp)}
+        .mo{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .35s,visibility .35s;padding:.5rem}
+        .mo.op{opacity:1;visibility:visible}
+        .mbx{background:var(--sf);border:1px solid var(--bd);border-radius:16px;max-width:90vw;max-height:90vh;overflow:auto;position:relative;transform:scale(.88)translateY(20px);transition:transform .4s cubic-bezier(.23,1,.32,1)}
+        .mo.op .mbx{transform:scale(1)translateY(0)}
+        .mx{position:sticky;top:0;left:0;width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);color:var(--tx);display:flex;align-items:center;justify-content:center;z-index:10;transition:all .3s;font-size:.85rem;float:left;margin:10px 10px 0 0}
+        .mx:hover{border-color:var(--pk);color:var(--pk)}
+        .t3b{width:85vw;max-width:900px;height:50vh;min-height:220px;border-radius:14px;overflow:hidden;background:#000}
+        .t3b canvas{width:100%!important;height:100%!important;display:block}
+        @media(min-width:768px){.t3b{width:80vw;height:55vh;min-height:300px}}
+        .mw{position:fixed;bottom:16px;left:16px;z-index:4000;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+        .mtg{width:46px;height:46px;border-radius:50%;border:2px solid var(--cy);background:rgba(5,5,16,.92);color:var(--cy);font-size:1.1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--cyg);transition:all .3s}
+        .mtg:hover{background:var(--cy);color:var(--bg)}
+        .mpn{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:.8rem;width:250px;max-height:280px;overflow-y:auto;display:none}
+        .mpn.op{display:block}
+        .mpt{font-size:.8rem;font-weight:700;color:var(--mt);margin-bottom:.6rem}
+        .mtk{display:flex;align-items:center;gap:8px;padding:6px;border-radius:8px;margin-bottom:3px;border:1px solid transparent;transition:all .25s}
+        .mtk:hover{background:var(--cd)}.mtk.act{background:#00d4ff0c;border-color:#00d4ff30}
+        .mpb{width:32px;height:32px;border-radius:50%;border:1px solid var(--bd);background:0 0;color:var(--cy);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;font-size:.75rem}
+        .mtk.act .mpb{background:var(--cy);color:var(--bg);border-color:var(--cy)}
+        .mnm{font-size:.8rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .mrm{color:var(--mt);background:0 0;border:none;transition:color .3s;font-size:.75rem;padding:4px}.mrm:hover{color:#ff4444}
+        .mpr{width:100%;height:3px;background:var(--bd);border-radius:3px;margin-top:6px;overflow:hidden;display:none}.mpr.op{display:block}
+        .mbr{height:100%;background:var(--cy);border-radius:3px;width:0%;transition:width .3s linear}
+        .mad{width:100%;padding:8px;margin-top:6px;border:1px dashed var(--bd);border-radius:8px;background:0 0;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:.8rem;transition:all .3s}
+        .mad:hover{border-color:var(--cy);color:var(--cy)}
+        .fab{position:fixed;bottom:16px;right:16px;z-index:4000;width:52px;height:52px;border-radius:50%;border:2px solid var(--cy);background:var(--bg);color:var(--cy);font-size:1.3rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--cyg);transition:all .4s cubic-bezier(.23,1,.32,1)}
+        .fab:hover{background:var(--cy);color:var(--bg);transform:rotate(90deg)scale(1.1)}
+        .fab.hid{display:none}
+        .fl{display:block;font-size:.82rem;color:var(--mt);margin-bottom:5px;font-weight:700}
+        .fi,.fta{width:100%;padding:10px 14px;background:var(--cd);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:.9rem;transition:border-color .3s,box-shadow .3s;outline:none}
+        .fi:focus,.fta:focus{border-color:var(--cy);box-shadow:0 0 0 3px #00d4ff1a}
+        .fta{resize:vertical;min-height:70px}
+        .fsel{width:100%;padding:10px 14px;background:var(--cd);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:'Tajawal',sans-serif;font-size:.9rem;transition:border-color .3s,box-shadow .3s;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236a6a90' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 14px center}
+        .fsel option{background:var(--cd)}
+        .fdr{border:2px dashed var(--bd);border-radius:12px;padding:1.5rem 1rem;text-align:center;transition:all .3s;color:var(--mt)}
+        .fdr:hover,.fdr.dg{border-color:var(--cy);background:#00d4ff06;color:var(--cy)}
+        .fsb{padding:12px 30px;background:var(--cy);color:var(--bg);border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;transition:all .3s}
+        .fsb:hover{box-shadow:var(--cyg);transform:translateY(-2px)}
+        .emp{text-align:center;padding:4rem 1.5rem;color:var(--mt)}.emp i{font-size:3rem;margin-bottom:.8rem;opacity:.2;display:block}
+        .tbx{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:90%;max-width:360px}
+        .tst{padding:10px 20px;background:var(--sf);border:1px solid var(--bd);border-radius:10px;font-family:'Tajawal',sans-serif;font-size:.85rem;box-shadow:0 10px 40px rgba(0,0,0,.5);animation:tI .35s ease,tO .35s ease 2.6s forwards;pointer-events:auto;text-align:center;width:100%}
+        .tst.ok{border-color:#22c55e;color:#22c55e}.tst.er{border-color:#ff4444;color:#ff4444}
+        @keyframes tI{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes tO{from{opacity:1}to{opacity:0;transform:translateY(-16px)}}
+        .rv{opacity:0;transform:translateY(20px);transition:opacity .5s,transform .5s cubic-bezier(.23,1,.32,1)}.rv.vs{opacity:1;transform:translateY(0)}
+        .pww{width:90vw;max-width:360px;padding:2rem 1.5rem;text-align:center}
+        .pwic{width:60px;height:60px;border-radius:50%;border:2px solid var(--cy);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-size:1.4rem;color:var(--cy);box-shadow:var(--cyg)}
+        .ab{background:rgba(255,45,117,.08);border:1px solid rgba(255,45,117,.2);border-radius:10px;padding:.6rem 1rem;margin:.8rem auto -.3rem;display:flex;align-items:center;justify-content:space-between;max-width:1400px;padding-left:1rem;padding-right:1rem;flex-wrap:wrap;gap:.4rem}
+        .ab span{color:var(--pk);font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:5px}
+        .cicon{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--sf)}.cicon i{font-size:2.2rem;opacity:.35}
+        .cicon.abg-audio{background:linear-gradient(135deg,#0a1a0f,#0f2a18)}.cicon.abg-audio i{color:#22c55e}
+        .cicon.abg-pdf{background:linear-gradient(135deg,#1a150a,#2a1f0f)}.cicon.abg-pdf i{color:#f59e0b}
+        .cicon.abg-file{background:linear-gradient(135deg,#0f0f15,#15151f)}.cicon.abg-file i{color:#9ca3af}
+        .cicon.abg-3d{background:linear-gradient(135deg,#0f0f2a,#1a1a40)}.cicon.abg-3d i{color:var(--pp)}
+        .fv{text-align:center;padding:2rem 1rem}.fv i{font-size:3rem;color:var(--cy);margin-bottom:1rem;display:block}
+        .fv h3{font-size:1.1rem;font-weight:900;margin-bottom:.3rem}.fv .fm{color:var(--mt);font-size:.85rem;margin-bottom:.2rem}
+        .fv .dlb{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:var(--cy);color:var(--bg);border:none;border-radius:10px;font-family:'Tajawal',sans-serif;font-size:.9rem;font-weight:700;margin-top:1.2rem;text-decoration:none;transition:all .3s}
+        .fv .dlb:hover{box-shadow:var(--cyg);transform:translateY(-2px)}
+        .sft{text-align:center;padding:1.5rem 1rem;color:var(--mt);font-size:.8rem;border-top:1px solid var(--bd);margin-top:2rem}
+        /* روابط الفوتر */
+        .ft-soc{display:flex;justify-content:center;gap:16px;margin-bottom:.8rem;flex-wrap:wrap}
+        .ft-soc a{width:36px;height:36px;border-radius:50%;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;color:var(--mt);text-decoration:none;font-size:.9rem;transition:all .3s}
+        .ft-soc a:hover{border-color:var(--cy);color:var(--cy);box-shadow:0 0 10px #00d4ff20}
+        .ldov{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.8rem;transition:opacity .5s}
+        .ldov.hid{opacity:0;pointer-events:none}
+        .ldsp{width:36px;height:36px;border:3px solid var(--bd);border-top-color:var(--cy);border-radius:50%;animation:ldR .8s linear infinite}
+        @keyframes ldR{to{transform:rotate(360deg)}}
+        .add-box{width:92vw;max-width:480px;padding:1.5rem}
+        @media(min-width:640px){.add-box{padding:2rem}}
+        .soc-box{width:92vw;max-width:480px;padding:1.5rem}
+        @media(min-width:640px){.soc-box{padding:2rem}}
+        .soc-list{display:flex;flex-direction:column;gap:8px;margin-bottom:1rem}
+        .soc-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--cd);border:1px solid var(--bd);border-radius:10px;transition:border-color .3s}
+        .soc-item:hover{border-color:var(--cy)}
+        .soc-item i{font-size:1rem;color:var(--cy);width:24px;text-align:center;flex-shrink:0}
+        .soc-item span{flex:1;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx)}
+        .soc-item .sr{color:var(--mt);background:0 0;border:none;font-size:.8rem;padding:4px;transition:color .3s;flex-shrink:0}
+        .soc-item .sr:hover{color:#ff4444}
+        .soc-row-form{display:flex;gap:8px}
+        .soc-row-form .fsel{flex:1.5}
+        .soc-row-form .fi{flex:2}
+        .soc-row-form .fsb{padding:10px 16px;flex-shrink:0;font-size:.85rem}
+        .soc-empty{text-align:center;padding:1.5rem;color:var(--mt);font-size:.85rem}
+        .soc-empty i{display:block;font-size:2rem;margin-bottom:.5rem;opacity:.3}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--cy)}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+        @media(max-width:639px){.shd{padding:.5rem .7rem}.hi{gap:.4rem}.ha{gap:5px}.hb{padding:6px 10px;font-size:.72rem}.hb i{font-size:.7rem}.fab{width:46px;height:46px;font-size:1.1rem;bottom:12px;right:12px}.mw{bottom:12px;left:12px}.mtg{width:40px;height:40px;font-size:1rem}.mpn{width:220px;max-height:250px}.ab{margin:.6rem .7rem -.2rem;font-size:.75rem}.cob{width:38px;height:38px;font-size:.9rem}.cpi{width:34px;height:34px;font-size:.75rem}.cbtn{padding:4px 8px;font-size:.7rem}}
+        @media(min-width:640px)and(max-width:1023px){.hb{padding:7px 14px;font-size:.8rem}.fab{width:50px;height:50px;font-size:1.2rem}.mtg{width:46px;height:46px}.mpn{width:250px}.ab{margin:.8rem 1.2rem -.3rem}}
+        @media(min-width:1024px)and(max-width:1279px){.shd{padding:.7rem 1.5rem}}
+    </style>
+</head>
+<body>
+    <div class="cd" id="cD"></div>
+    <div class="cr" id="cR"></div>
+    <canvas id="pCv"></canvas>
+    <div class="bgG"></div>
+    <div class="bgB" style="width:500px;height:500px;top:-200px;right:-150px;background:var(--cy)"></div>
+    <div class="bgB" style="width:400px;height:400px;bottom:-150px;left:-100px;background:var(--pk)"></div>
+    <div class="bgB center" style="width:300px;height:300px;top:40%;left:50%;background:var(--pp);opacity:.04"></div>
+    <div class="tbx" id="tstB"></div>
+    <div class="ldov" id="ldOv"><div class="ldsp"></div><p style="color:var(--mt);font-size:.85rem">جاري تحميل البيانات...</p></div>
+
+    <div id="intro"><canvas id="iCv"></canvas><div class="iW">
+        <h1 class="nft" id="nF">FADL</h1>
+        <div class="iln" id="iLn"></div>
+        <button class="ibt" id="iBtn">ادخل المعرض</button>
+    </div></div>
+
+    <div id="app">
+        <header class="shd"><div class="hi">
+            <div style="display:flex;align-items:center;gap:8px">
+                <svg class="osvg" viewBox="0 0 80 80" width="32" height="32"><g fill="none" stroke="#00d4ff" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"><path d="M40 12L52 40 40 68 28 40Z" opacity=".7"/><path d="M40 22L46 40 40 58 34 40Z" opacity=".4"/><path d="M28 40C18 40 8 34 6 26 4 20 10 16 16 20 20 22 18 28 14 27"/><path d="M28 40C18 40 8 46 6 54 4 60 10 64 16 60 20 58 18 52 14 53"/><path d="M52 40C62 40 72 34 74 26 76 20 70 16 64 20 60 22 62 28 66 27"/><path d="M52 40C62 40 72 46 74 54 76 60 70 64 64 60 60 58 62 52 66 53"/><path d="M40 12C36 6 28 3 22 8"/><path d="M22 8C20 10 21 14 24 13"/><path d="M40 12C44 6 52 3 58 8"/><path d="M58 8C60 10 59 14 56 13"/><path d="M40 68C36 74 28 77 22 72"/><path d="M22 72C20 70 21 66 24 67"/><path d="M40 68C44 74 52 77 58 72"/><path d="M58 72C60 70 59 66 56 67"/><circle cx="40" cy="40" r="3" fill="#00d4ff" stroke="none" opacity=".8"/><circle cx="22" cy="8" r="1.5" fill="#00d4ff" stroke="none"/><circle cx="58" cy="8" r="1.5" fill="#00d4ff" stroke="none"/><circle cx="22" cy="72" r="1.5" fill="#00d4ff" stroke="none"/><circle cx="58" cy="72" r="1.5" fill="#00d4ff" stroke="none"/></g></svg>
+                <span class="lnm">FADL</span>
+            </div>
+            <div class="ha">
+                <button class="hb" id="goV" style="display:none"><i class="fas fa-eye"></i><span class="hb-t">مشاهدة</span></button>
+                <button class="hb" id="goA" aria-label="التحكم"><i class="fas fa-lock"></i></button>
+                <button class="hb" id="goL" style="display:none"><i class="fas fa-sign-out-alt"></i><span class="hb-t">خروج</span></button>
+                <button class="hb" id="socBtn" style="display:none"><i class="fas fa-link"></i><span class="hb-t">روابط</span></button>
+                <button class="hb dng" id="clrAll" style="display:none"><i class="fas fa-trash-alt"></i><span class="hb-t">مسح</span></button>
+            </div>
+            <nav class="fls" id="flts">
+                <button class="fb ac" data-f="all">الكل <span class="wcc" id="cA"></span></button>
+                <button class="fb" data-f="image"><i class="fas fa-image" style="margin-left:3px;font-size:.7rem"></i>صور</button>
+                <button class="fb" data-f="video"><i class="fas fa-video" style="margin-left:3px;font-size:.7rem"></i>فيديو</button>
+                <button class="fb" data-f="3d"><i class="fas fa-cube" style="margin-left:3px;font-size:.7rem"></i>3D</button>
+                <button class="fb" data-f="audio"><i class="fas fa-music" style="margin-left:3px;font-size:.7rem"></i>صوتي</button>
+                <button class="fb" data-f="other"><i class="fas fa-file" style="margin-left:3px;font-size:.7rem"></i>ملفات</button>
+            </nav>
+        </div></header>
+        <div class="ab" id="aBar" style="display:none"><span><i class="fas fa-shield-alt"></i> وضع الإدارة</span><span style="opacity:.6;font-weight:400" id="storInfo"></span></div>
+        <main><div class="gg" id="grid"></div><div class="emp" id="emp" style="display:none"><i class="fas fa-folder-open"></i><p style="font-size:1rem;font-weight:700;margin-bottom:.4rem">لا توجد أعمال بعد</p><p>اضغط على <span style="color:var(--cy)">+</span> لإضافة عملك الأول</p></div></main>
+        <footer class="sft"><div class="ft-soc" id="ftSoc"></div><span style="color:var(--cy)">FADL</span></footer>
+        <div class="mw" id="muW"><div class="mpn" id="muP"><div class="mpt"><i class="fas fa-headphones" style="margin-left:5px"></i>الموسيقى</div><div id="mLi"></div><div class="mpr" id="mPr"><div class="mbr" id="mBr"></div></div><button class="mad" id="mAd"><i class="fas fa-plus" style="margin-left:5px"></i>إضافة ملف صوتي</button><input type="file" id="mFi" accept="audio/*" multiple style="display:none"></div><button class="mtg" id="mTg" aria-label="الموسيقى"><i class="fas fa-music"></i></button></div>
+        <button class="fab hid" id="fab" aria-label="إضافة عمل"><i class="fas fa-plus"></i></button>
+    </div>
+
+    <div class="mo" id="vM"><div class="mbx" id="vB"><button class="mx" id="vX"><i class="fas fa-times"></i></button><div id="vD"></div></div></div>
+    <div class="mo" id="pwM"><div class="mbx pww"><div class="pwic"><i class="fas fa-user-shield"></i></div><h3 style="font-size:1.2rem;font-weight:900;margin-bottom:.4rem">لوحة التحكم</h3><p style="color:var(--mt);font-size:.85rem;margin-bottom:1.2rem;line-height:1.6">سجل الدخول بدون كلمة مرور عبر رابط الدخول المُرسل إلى بريدك الإلكتروني.</p><div class="fi" style="text-align:center;font-size:1rem;margin-bottom:.8rem;background:var(--cd);border:1px solid var(--bd);border-radius:10px;color:var(--tx);padding:12px;">fadalwsam605@gmail.com</div><p style="color:var(--mt);font-size:.78rem;margin-top:-.4rem;margin-bottom:.8rem;line-height:1.4">يُفضل فتح هذه الصفحة عبر خادم محلي (http://localhost) بدلاً من فتح الملف مباشرةً.</p><p style="color:#ff4444;font-size:.78rem;margin-top:.5rem;display:none" id="pwE">حدث خطأ أثناء التحقق</p><button class="fsb" id="pwB" style="width:100%;margin-top:.6rem">إرسال رابط الدخول</button></div></div>
+    <div class="mo" id="aM"><div class="mbx add-box"><button class="mx" id="aX"><i class="fas fa-times"></i></button><h3 style="font-size:1.15rem;font-weight:900;color:var(--cy);margin-bottom:1.2rem" id="aTi">إضافة عمل جديد</h3><form id="aFm" class="flex flex-col gap-4"><input type="hidden" id="eId" value=""><div><label class="fl">اسم العمل</label><input type="text" class="fi" id="wN" required placeholder="مثال: تصميم واجهة"></div><div><label class="fl">الوصف <span style="opacity:.5">(اختياري)</span></label><textarea class="fta" id="wD" placeholder="وصف مختصر..."></textarea></div><div><label class="fl">الملف <span style="opacity:.5" id="fSk">(اختياري)</span></label><div class="fdr" id="fDr"><i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;margin-bottom:6px;display:block"></i><p style="font-size:.85rem">اسحب الملف أو اضغط للاختيار</p></div><input type="file" id="wF" style="display:none"><p id="fIf" style="font-size:.78rem;color:var(--cy);margin-top:6px;display:none"></p></div><button type="submit" class="fsb" id="aSb" style="width:100%"><i class="fas fa-plus" style="margin-left:6px"></i>إضافة العمل</button></form></div></div>
+
+    <!-- مودال الروابط -->
+    <div class="mo" id="socM"><div class="mbx soc-box"><button class="mx" id="socX"><i class="fas fa-times"></i></button><h3 style="font-size:1.15rem;font-weight:900;color:var(--cy);margin-bottom:1rem"><i class="fas fa-link" style="margin-left:6px"></i>روابط التواصل</h3><div class="soc-list" id="socList"></div><form id="socFm" class="flex flex-col gap-3"><div class="soc-row-form"><select class="fsel" id="socPl" required><option value="">اختر المنصة</option><option value="instagram">Instagram</option><option value="x-twitter">X (Twitter)</option><option value="youtube">YouTube</option><option value="tiktok">TikTok</option><option value="linkedin-in">LinkedIn</option><option value="github">GitHub</option><option value="facebook-f">Facebook</option><option value="snapchat-ghost">Snapchat</option><option value="telegram-plane">Telegram</option><option value="whatsapp">WhatsApp</option><option value="behance">Behance</option><option value="dribbble">Dribbble</option><option value="globe">موقع إلكتروني</option></select><input type="url" class="fi" id="socUr" required placeholder="https://..." style="flex:2"><button type="submit" class="fsb" style="padding:10px 14px"><i class="fas fa-plus"></i></button></div></form></div></div>
+
+    <script type="module">
+    import*as THREE from'three';import{OrbitControls}from'three/addons/controls/OrbitControls.js';import{GLTFLoader}from'three/addons/loaders/GLTFLoader.js';
+    window.THREE=THREE;window.OrbitControls=OrbitControls;window.GLTFLoader=GLTFLoader;window._tr=true;window.dispatchEvent(new Event('tr'));
+    </script>
+    <script>
+    (function(){
+    'use strict';
+
+    /* ===== IndexedDB ===== */
+    var db=null;
+    function openDB(){return new Promise(function(ok,no){var r=indexedDB.open('fadlDB',3);r.onupgradeneeded=function(e){var d=e.target.result;if(!d.objectStoreNames.contains('works'))d.createObjectStore('works',{keyPath:'id',autoIncrement:true});if(!d.objectStoreNames.contains('tracks'))d.createObjectStore('tracks',{keyPath:'id',autoIncrement:true});if(!d.objectStoreNames.contains('socials'))d.createObjectStore('socials',{keyPath:'id',autoIncrement:true})};r.onsuccess=function(e){db=e.target.result;ok(db)};r.onerror=function(e){no(e)}})}
+    function dbAdd(s,d){return new Promise(function(ok,no){var t=db.transaction(s,'readwrite'),r=t.objectStore(s).add(d);r.onsuccess=function(){ok(r.result)};r.onerror=function(e){no(e)}})}
+    function dbPut(s,d){return new Promise(function(ok,no){var t=db.transaction(s,'readwrite'),r=t.objectStore(s).put(d);r.onsuccess=function(){ok(r.result)};r.onerror=function(e){no(e)}})}
+    function dbDel(s,id){return new Promise(function(ok,no){var t=db.transaction(s,'readwrite'),r=t.objectStore(s).delete(id);r.onsuccess=function(){ok()};r.onerror=function(e){no(e)}})}
+    function dbAll(s){return new Promise(function(ok,no){var t=db.transaction(s,'readonly'),r=t.objectStore(s).getAll();r.onsuccess=function(){ok(r.result)};r.onerror=function(e){no(e)}})}
+    function dbClr(s){return new Promise(function(ok,no){var t=db.transaction(s,'readwrite'),r=t.objectStore(s).clear();r.onsuccess=function(){ok()};r.onerror=function(e){no(e)}})}
+
+    /* ===== حالة ===== */
+    var works=[],tracks=[],socials=[],curF='all',curTk=-1,isPl=false,isAd=false;
+    var aud=new Audio(),selF=null,t3c=null;
+    var urls=[];
+    function mURL(b){if(!b)return null;var u=URL.createObjectURL(b);urls.push(u);return u}
+
+    const supabaseUrl = 'https://hrnxpzkdxlaqzwrkpvdq.supabase.co';
+    // لا تضَع مفاتيح حساسة في الشيفرة عند رفع المشروع للعامة.
+    // ضع مفتاح الـanon في إعدادات الاستضافة أو في localStorage باسم 'supabaseAnon' عند الحاجة.
+    const supabaseKey = '';
+    const ADMIN_EMAIL = 'fadalwsam605@gmail.com';
+    // رمز الإدارة المحلي مخفي هنا بعكس السلسلة: 'fadalking998' معكوساً
+    const LOCAL_ADMIN_REV = '899gnikladaf';
+    var supabaseClient = null;
+    function initSupabase(){
+        // Ensure anon key is available in localStorage for quicker init on other sessions
+        // لا نملأ localStorage تلقائياً هنا لأمان الكود عند الرفع.
+        try{ var tmp = localStorage.getItem('supabaseAnon') || ''; if(!tmp && supabaseKey) try{ localStorage.setItem('supabaseAnon', supabaseKey) }catch(e){} }catch(e){}
+        
+        var usedKey = (localStorage.getItem('supabaseAnon') || supabaseKey || '').trim();
+        if(window.supabase && supabaseUrl && usedKey){
+            try{
+                supabaseClient = supabase.createClient(supabaseUrl, usedKey);
+                window.supabaseClient = supabaseClient;
+                console.log('Supabase client جاهز');
+                window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                    if (session) setAd(true);
+                });
+                window.supabaseClient.auth.onAuthStateChange((_event, session) => {
+                    if (session) setAd(true);
+                    else setAd(false);
+                });
+            }catch(e){console.warn('Supabase init failed',e);supabaseClient=null;window.supabaseClient=null}
+        }
+    }
+    async function loadSupabaseProjects(){
+        if(!supabaseClient)return[];
+        try{
+            var res = await supabaseClient.from('projects').select('*').order('created_at',{ascending:false});
+            if(res.error)throw res.error;
+            if(!Array.isArray(res.data))return[];
+            return res.data.map(function(item){
+                return{
+                    id:item.id||Date.now()+Math.random(),
+                    nm:item.name||'مشروع',
+                    ds:item.description||'',
+                    type:item.type||'file',
+                    file:null,
+                    thumb:null,
+                    eUrl:item.file_url||item.url||null,
+                    eTh:item.thumbnail_url||null,
+                    fn:item.file_name||item.name||null,
+                    fsz:item.file_size||null,
+                    supabase_id:item.id||null
+                };
+            });
+        }catch(e){console.warn('Supabase load error',e);return[]}
+    }
+    async function uploadSupabaseFile(file){
+        if(!supabaseClient)return null;
+        var bucket='uploads';
+        var path='uploads/'+Date.now()+'-'+file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+        var res = await supabaseClient.storage.from(bucket).upload(path,file,{cacheControl:'3600',upsert:false});
+        if(res.error)throw res.error;
+        var url = supabaseClient.storage.from(bucket).getPublicUrl(path);
+        if(url.error)throw url.error;
+        return url.data.publicUrl;
+    }
+    async function saveProjectToSupabase(project){
+        if(!supabaseClient)return null;
+        var payload={
+            name:project.nm,
+            description:project.ds,
+            type:project.type,
+            file_url:project.eUrl||project.url||null,
+            thumbnail_url:project.eTh||null,
+            file_name:project.fn||null,
+            file_size:project.fsz||null
+        };
+        if(project.supabase_id){
+            var upd = await supabaseClient.from('projects').update(payload).eq('id',project.supabase_id);
+            if(upd.error)throw upd.error;
+            return upd.data;
+        }
+        var ins = await supabaseClient.from('projects').insert([payload]);
+        if(ins.error)throw ins.error;
+        if(Array.isArray(ins.data)&&ins.data[0])project.supabase_id=ins.data[0].id;
+        return ins.data;
+    }
+    function freeURLs(){urls.forEach(function(u){try{URL.revokeObjectURL(u)}catch(e){}});urls=[]}
+
+    /* ===== عناصر ===== */
+    var $=function(id){return document.getElementById(id)};
+    var cD=$('cD'),cR=$('cR'),pCv=$('pCv'),pCx=pCv.getContext('2d');
+    var intro=$('intro'),iCv=$('iCv'),nF=$('nF'),iLn=$('iLn'),iBtn=$('iBtn'),introSoc=$('introSoc');
+    var app=$('app'),grid=$('grid'),emp=$('emp'),flts=$('flts'),cA=$('cA');
+    var vM=$('vM'),vD=$('vD'),vX=$('vX');
+    var pwM=$('pwM'),pwE=$('pwE'),pwB=$('pwB');
+    var aM=$('aM'),aX=$('aX'),aFm=$('aFm'),aTi=$('aTi'),aSb=$('aSb'),fSk=$('fSk');
+    var fab=$('fab'),fDr=$('fDr'),wF=$('wF'),fIf=$('fIf');
+    var goA=$('goA'),goV=$('goV'),goL=$('goL'),aBar=$('aBar'),storInfo=$('storInfo'),clrAll=$('clrAll');
+    var muW=$('muW'),mTg=$('mTg'),muP=$('muP'),mLi=$('mLi');
+    var mAd=$('mAd'),mFi=$('mFi'),mPr=$('mPr'),mBr=$('mBr'),tstB=$('tstB'),ldOv=$('ldOv');
+    var socM=$('socM'),socX=$('socX'),socFm=$('socFm'),socPl=$('socPl'),socUr=$('socUr'),socList=$('socList'),socBtn=$('socBtn'),ftSoc=$('ftSoc');
+
+    function toast(m,t){var e=document.createElement('div');e.className='tst '+(t==='error'?'er':'ok');e.textContent=m;tstB.appendChild(e);setTimeout(function(){e.remove()},3000)}
+
+    /* ===== ماوس ===== */
+    var mx=-100,my=-100,rx=-100,ry=-100;
+    document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cD.style.left=mx+'px';cD.style.top=my+'px'});
+    document.addEventListener('mousedown',function(){cR.classList.add('ck')});
+    document.addEventListener('mouseup',function(){cR.classList.remove('ck')});
+    (function cl(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cR.style.left=rx+'px';cR.style.top=ry+'px';requestAnimationFrame(cl)})();
+    document.addEventListener('mouseover',function(e){if(e.target.closest('button,a,input,select,textarea,.wk,.fb,.mtk,.soc-ic'))cR.classList.add('hv')});
+    document.addEventListener('mouseout',function(e){if(e.target.closest('button,a,input,select,textarea,.wk,.fb,.mtk,.soc-ic'))cR.classList.remove('hv')});
+
+    /* ===== جزيئات ماوس — smooth ===== */
+    var mpts=[],lmx=-100,lmy=-100;
+    function rPC(){pCv.width=innerWidth;pCv.height=innerHeight}rPC();addEventListener('resize',rPC);
+    document.addEventListener('mousemove',function(e){
+        var dx=e.clientX-lmx,dy=e.clientY-lmy,sp=Math.sqrt(dx*dx+dy*dy);
+        var n=Math.min(Math.floor(sp/6),2);
+        for(var i=0;i<n;i++){
+            mpts.push({
+                x:e.clientX+(Math.random()-.5)*6,
+                y:e.clientY+(Math.random()-.5)*6,
+                vx:(Math.random()-.5)*.8,
+                vy:Math.random()*.6+.2,
+                g:.02+Math.random()*.01,
+                sz:Math.random()*1.2+.4,
+                a:.3+Math.random()*.15,
+                dc:.005+Math.random()*.005,
+                c:'rgba(0,212,255,'+(0.5+Math.random()*.3)+')'
+            });
+        }
+        if(mpts.length>150)mpts.splice(0,mpts.length-150);
+        lmx=e.clientX;lmy=e.clientY;
+    });
+    (function dP(){
+        pCx.clearRect(0,0,pCv.width,pCv.height);
+        for(var i=mpts.length-1;i>=0;i--){
+            var p=mpts[i];
+            p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.a-=p.dc;p.sz*=.99;
+            if(p.a<=0||p.sz<.1){mpts.splice(i,1);continue}
+            pCx.globalAlpha=p.a;
+            pCx.beginPath();pCx.arc(p.x,p.y,Math.max(.1,p.sz),0,6.2832);
+            pCx.fillStyle=p.c;pCx.fill();
+            /* توهج ناعم جداً */
+            pCx.globalAlpha=p.a*.15;
+            pCx.beginPath();pCx.arc(p.x,p.y,Math.max(.1,p.sz*4),0,6.2832);
+            pCx.fillStyle=p.c;pCx.fill();
+        }
+        pCx.globalAlpha=1;
+        requestAnimationFrame(dP);
+    })();
+
+    /* ===== الانترو ===== */
+    var ctx=iCv.getContext('2d'),ips=[],iRf=null;
+    function rIC(){iCv.width=innerWidth;iCv.height=innerHeight}rIC();addEventListener('resize',rIC);
+    for(var i=0;i<Math.min(50,Math.floor(innerWidth*innerHeight/25000));i++)ips.push({x:Math.random()*iCv.width,y:Math.random()*iCv.height,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*1.2+.4,c:Math.random()>.5?'rgba(0,212,255,0.6)':'rgba(255,45,117,0.4)'});
+    function dI(){ctx.clearRect(0,0,iCv.width,iCv.height);var W=iCv.width,H=iCv.height;for(var i=0;i<ips.length;i++){var p=ips[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.2832);ctx.fillStyle=p.c;ctx.fill();for(var j=i+1;j<ips.length;j++){var q=ips[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);if(d<110){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);ctx.strokeStyle='rgba(0,212,255,'+(1-d/110)*.12+')';ctx.lineWidth=.3;ctx.stroke()}}}iRf=requestAnimationFrame(dI)}dI();
+    setTimeout(function(){nF.classList.add('show')},200);setTimeout(function(){iLn.classList.add('show')},700);setTimeout(function(){iBtn.classList.add('show')},1400);
+
+    /* ===== عرض الروابط ===== */
+    function getSocialIconName(platform){
+        var map={
+            'instagram':'instagram',
+            'x-twitter':'x',
+            'twitter':'twitter',
+            'youtube':'youtube',
+            'tiktok':'tiktok',
+            'linkedin-in':'linkedin-in',
+            'linkedin':'linkedin',
+            'github':'github',
+            'facebook-f':'facebook-f',
+            'facebook':'facebook',
+            'snapchat-ghost':'snapchat-ghost',
+            'telegram-plane':'telegram-plane',
+            'whatsapp':'whatsapp',
+            'behance':'behance',
+            'dribbble':'dribbble',
+            'globe':'globe'
+        };
+        return map[(platform||'').toLowerCase()]||'link';
+    }
+    function renderSocIcons(container,className){
+        if(!container)return;
+        container.innerHTML='';
+        if(!socials.length){
+            if(container===ftSoc)container.innerHTML='<span style="opacity:.5">لا توجد روابط بعد</span>';
+            return;
+        }
+        socials.forEach(function(s){
+            var a=document.createElement('a');
+            a.href=s.url;a.target='_blank';a.rel='noopener';
+            a.className=className||'';
+            a.setAttribute('aria-label',s.platform);
+            var iconName=getSocialIconName(s.platform);
+            var icon=document.createElement('i');
+            icon.className=(iconName==='link'?'fas fa-link':'fab fa-'+iconName);
+            a.appendChild(icon);
+            container.appendChild(a);
+        });
+    }
+    function renderSocList(){
+        socList.innerHTML='';
+        if(!socials.length){socList.innerHTML='<div class="soc-empty"><i class="fas fa-link-slash"></i><p>لا توجد روابط بعد</p><p style="font-size:.75rem;opacity:.6">أضف روابط حساباتك من الأسفل</p></div>';return}
+        socials.forEach(function(s){
+            var d=document.createElement('div');d.className='soc-item';
+            var name=s.platform.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase()});
+            var iconName=getSocialIconName(s.platform);
+            d.innerHTML='<i class="'+(iconName==='link'?'fas fa-link':'fab fa-'+iconName)+'"></i><span title="'+s.url+'">'+name+'</span><button class="sr" data-id="'+s.id+'" title="حذف"><i class="fas fa-times"></i></button>';
+            socList.appendChild(d);
+        });
+        socList.querySelectorAll('.sr').forEach(function(b){b.addEventListener('click',async function(){var id=+this.dataset.id;try{await window.supabaseClient.from('socials').delete().eq('id',id)}catch(e){console.error(e)}socials=socials.filter(function(s){return s.id!==id});renderSocList();renderSocIcons(introSoc,'soc-ic');renderSocIcons(ftSoc,'');toast('تم حذف الرابط')})});
+    }
+
+    /* ===== صورة مصغرة ===== */
+    function genThumb(blob){return new Promise(function(ok){var u=URL.createObjectURL(blob),v=document.createElement('video');v.src=u;v.muted=true;v.preload='metadata';v.addEventListener('loadeddata',function(){v.currentTime=1});v.addEventListener('seeked',function(){var c=document.createElement('canvas');c.width=400;c.height=250;c.getContext('2d').drawImage(v,0,0,400,250);c.toBlob(function(b){URL.revokeObjectURL(u);ok(b)},'image/jpeg',.7)});v.addEventListener('error',function(){URL.revokeObjectURL(u);ok(null)})})}
+
+    /* ===== بيانات تجريبية ===== */
+    function demos(){return[
+        {nm:'تصميم واجهة تطبيق',type:'image',ds:'واجهة مستخدم حديثة بتصميم داكن',eUrl:'https://picsum.photos/seed/fd1/900/560.jpg',eTh:'https://picsum.photos/seed/fd1/400/250.jpg',file:null,thumb:null,fn:null,fsz:null},
+        {nm:'مشهد طبيعي سينمائي',type:'image',ds:'تصوير فوتوغرافي عالي الجودة',eUrl:'https://picsum.photos/seed/fd2/900/560.jpg',eTh:'https://picsum.photos/seed/fd2/400/250.jpg',file:null,thumb:null,fn:null,fsz:null},
+        {nm:'نموذج هندسي تفاعلي',type:'3d',ds:'أشكال هندسية مع إضاءة نيون',eUrl:null,eTh:null,file:null,thumb:null,fn:null,fsz:null},
+        {nm:'شعار علامة تجارية',type:'image',ds:'تصميم شعار احترافي',eUrl:'https://picsum.photos/seed/fd4/900/560.jpg',eTh:'https://picsum.photos/seed/fd4/400/250.jpg',file:null,thumb:null,fn:null,fsz:null},
+        {nm:'عرض تقديمي',type:'pdf',ds:'ملف PDF يحتوي عرض تقديمي',eUrl:null,eTh:null,file:null,thumb:null,fn:'presentation.pdf',fsz:'2.4 MB'},
+        {nm:'نموذج معماري',type:'3d',ds:'تصور ثلاثي الأبعاد لمبنى حديث',eUrl:null,eTh:null,file:null,thumb:null,fn:null,fsz:null},
+        {nm:'تصميم جرافيك',type:'image',ds:'عمل فني تجريدي',eUrl:'https://picsum.photos/seed/fd7/900/560.jpg',eTh:'https://picsum.photos/seed/fd7/400/250.jpg',file:null,thumb:null,fn:null,fsz:null},
+        {nm:'مقطوعة موسيقية',type:'audio',ds:'مقطوعة إلكترونية',eUrl:null,eTh:null,file:null,thumb:null,fn:'track.mp3',fsz:'5.1 MB'}
+    ]}
+    function demoSoc(){return[
+        {platform:'instagram',url:'https://instagram.com'},
+        {platform:'x-twitter',url:'https://x.com'},
+        {platform:'github',url:'https://github.com'}
+    ]}
+
+    /* ===== تحميل ===== */
+    async function load(){
+        initSupabase();
+        try {
+            // جلب الأعمال
+            const { data: pData } = await window.supabaseClient.from('projects').select('*');
+            if(pData) {
+                works = pData.map(item => ({
+                    id: item.id,
+                    nm: item.title,
+                    ds: item.description,
+                    type: item.type || 'file',
+                    eUrl: item.image_url,
+                    eTh: item.image_url,
+                    url: item.image_url,
+                    thUrl: item.image_url
+                }));
+            }
+
+            // جلب الروابط
+            const { data: sData } = await window.supabaseClient.from('socials').select('*');
+            if(sData) socials = sData;
+
+            // جلب الموسيقى
+            const { data: tData } = await window.supabaseClient.from('tracks').select('*');
+            if(tData) tracks = tData;
+
+        } catch(e) {
+            console.error('خطأ بالتحميل من قاعدة البيانات:', e);
+        }
+
+        renderSocIcons(ftSoc,'');
+        ldOv.classList.add('hid');
+        renderG();
+        rTr();
+    }
+    function buildURLs(){freeURLs();works.forEach(function(w){w.url=w.file?mURL(w.file):(w.eUrl||null);w.thUrl=w.thumb?mURL(w.thumb):(w.eTh||null)});tracks.forEach(function(t){if(t.file)t.url=mURL(t.file)});if(storInfo)storInfo.textContent=works.length+' عمل محفوظ'}
+    async function updStor(){if(!navigator.storage||!navigator.storage.estimate)return;var u=(await navigator.storage.estimate()).usage||0;var s=u<1024?u+' B':u<1048576?(u/1024).toFixed(1)+' KB':(u/1048576).toFixed(1)+' MB';if(storInfo)storInfo.textContent=works.length+' عمل — '+s}
+
+    /* ===== أوضاع ===== */
+    function setAd(v){isAd=v;goA.style.display=v?'none':'flex';goV.style.display=v?'flex':'none';goL.style.display=v?'flex':'none';socBtn.style.display=v?'flex':'none';aBar.style.display=v?'flex':'none';fab.classList.toggle('hid',!v);clrAll.style.display=v?'flex':'none';renderG();if(v)updStor()}
+    // If a local admin session exists, enable admin mode
+    try{ if(sessionStorage.getItem('localAdmin')==='1') setAd(true); }catch(e){}
+    function resetAuthModal(){
+        pwE.style.display = 'none';
+        pwB.textContent = 'إرسال رابط الدخول';
+    }
+    goA.addEventListener('click',function(){
+        // طلب رمز الإدارة المحلي (خفيف وبسيط)
+        try{
+            var p = prompt('أدخل رمز الإدارة المحلي أو اضغط إلغاء لاستخدام تسجيل Supabase (سيفتح نافذة إرسال رابط):','');
+            if(p===null){
+                // فتح واجهة Supabase (magic link)
+                resetAuthModal();pwM.classList.add('op');document.body.style.overflow='hidden';
+                return;
+            }
+            if(String(p).trim().length===0){
+                pwE.style.display='block'; pwE.textContent='أدخل رمزًا صالحًا أو اضغط إلغاء.'; return;
+            }
+            // قارن الرمز بعد قلبه مع القيمة المخفية
+            var rev = String(p).split('').reverse().join('');
+            if(rev === LOCAL_ADMIN_REV){
+                sessionStorage.setItem('localAdmin','1');
+                setAd(true);
+                toast('تم تسجيل الدخول كمشرف محلي');
+            } else {
+                pwE.style.display='block'; pwE.textContent='رمز خاطئ.';
+            }
+        }catch(e){resetAuthModal();pwM.classList.add('op');document.body.style.overflow='hidden';}
+    });
+    pwB.addEventListener('click',sendMagicLink);
+    async function sendMagicLink(){
+        var oldText = pwB.textContent;
+        pwB.textContent = 'جاري الإرسال...';
+        pwE.style.display = 'none';
+        try {
+            if (!window.supabaseClient) throw new Error('Supabase غير مهيأ');
+            var email = ADMIN_EMAIL;
+            if (!email || email.includes('اكتب_ايميلك_هنا')) throw new Error('حدد ADMIN_EMAIL في الكود');
+
+            // Validate anon key format (basic check)
+            try {
+                if (typeof supabaseKey !== 'string' || supabaseKey.length < 30 || !supabaseKey.startsWith('eyJ')) {
+                    throw new Error('مفتاح الـ anon يبدو غير صالح. تأكد من لصق مفتاح anon (JWT يبدأ بـ eyJ...).');
+                }
+            } catch (kerr) {
+                throw kerr;
+            }
+
+            // Determine a safe redirect URL: use current location if served over http/https, otherwise fallback to localhost
+            var redirectTo;
+            try {
+                if (location && location.protocol && location.protocol.startsWith('http')) {
+                    redirectTo = location.href;
+                } else {
+                    redirectTo = 'http://localhost:5173/';
+                }
+            } catch (e) { redirectTo = 'http://localhost:5173/'; }
+
+            const { data, error } = await window.supabaseClient.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectTo } });
+            if (error) throw error;
+
+            pwB.textContent = oldText;
+            toast('تم إرسال رابط الدخول إلى بريدك الإلكتروني. افتح الرسالة من جهازك المحمول.');
+        } catch (err) {
+            console.error(err);
+            pwB.textContent = oldText;
+            pwE.style.display = 'block';
+            var msg = err.message || 'خطأ أثناء إرسال رابط الدخول';
+            if (/Invalid API key/i.test(msg) || /api key/i.test(msg) || /Unauthorized|401/.test(msg)) {
+                msg = 'مفتاح API غير صالح أو غير مخول للاستخدام من المتصفح. استخدم مفتاح anon (يبدأ بـ eyJ...) المخصص للمتصفح.';
+            }
+            pwE.textContent = msg;
+        }
+    }
+    pwM.addEventListener('click',function(e){if(e.target===pwM){pwM.classList.remove('op');document.body.style.overflow=''}});
+    goV.addEventListener('click',function(){setAd(false);toast('وضع المشاهدة')});
+    goL.addEventListener('click', async function(){
+        try {
+            // If Supabase client exists, try sign out; otherwise clear local admin session
+            if(window.supabaseClient){
+                const { error } = await window.supabaseClient.auth.signOut();
+                if(!error){
+                    sessionStorage.removeItem('localAdmin');
+                    setAd(false);
+                    toast('تم تسجيل الخروج بنجاح 👋');
+                } else {
+                    toast('حدث خطأ أثناء تسجيل الخروج', 'error');
+                }
+            } else {
+                sessionStorage.removeItem('localAdmin');
+                setAd(false);
+                toast('تم تسجيل الخروج (محلياً) 👋');
+            }
+        } catch(err) {
+            console.error(err);
+            toast('حدث خطأ أثناء تسجيل الخروج', 'error');
+        }
+    });
+    clrAll.addEventListener('click',async function(){if(!confirm('مسح كل البيانات؟'))return;await dbClr('works');await dbClr('tracks');await dbClr('socials');freeURLs();works=[];tracks=[];socials=[];curTk=-1;aud.pause();isPl=false;mTg.innerHTML='<i class="fas fa-music"></i>';var d=demos(),ds=demoSoc();for(var i=0;i<d.length;i++)d[i].id=await dbAdd('works',d[i]);for(var i=0;i<ds.length;i++)ds[i].id=await dbAdd('socials',ds[i]);works=d;socials=ds;buildURLs();renderG();rTr();renderSocIcons(introSoc,'soc-ic');renderSocIcons(ftSoc,'');renderSocList();updStor();toast('تم مسح البيانات')});
+
+    /* ===== مودال الروابط ===== */
+    socBtn.addEventListener('click',function(){renderSocList();socM.classList.add('op');document.body.style.overflow='hidden'});
+    socX.addEventListener('click',function(){socM.classList.remove('op');document.body.style.overflow=''});
+    socM.addEventListener('click',function(e){if(e.target===socM){socM.classList.remove('op');document.body.style.overflow=''}});
+    socFm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var pl=socPl.value, ur=socUr.value.trim();
+        if(!pl||!ur){toast('اختر المنصة وأدخل الرابط','error');return}
+        try {
+            const { data, error } = await window.supabaseClient.from('socials').insert([{ platform: pl, url: ur }]).select();
+            if(data && data[0]) {
+                socials.push(data[0]);
+                renderSocList();
+                renderSocIcons(ftSoc,'');
+                socFm.reset();
+                toast('تم إضافة الرابط 🔗');
+            }
+        } catch(err) {
+            console.error(err);
+            toast('حدث خطأ أثناء إضافة الرابط','error');
+        }
+    });
+
+    /* ===== أنواع ===== */
+    function gFT(f){if(!f)return'file';var t=f.type||'',n=f.name.toLowerCase();if(t.startsWith('image/'))return'image';if(t.startsWith('video/'))return'video';if(t.startsWith('audio/'))return'audio';if(n.endsWith('.glb')||n.endsWith('.gltf'))return'3d';if(n.endsWith('.pdf'))return'pdf';return'file'}
+    function fmtSz(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(2)+' MB'}
+    function tL(t){return{image:'صورة',video:'فيديو','3d':'3D',audio:'صوتي',pdf:'PDF',file:'ملف'}[t]||'ملف'}
+    function tI(t){return{image:'fa-image',video:'fa-video','3d':'fa-cube',audio:'fa-music',pdf:'fa-file-pdf',file:'fa-file'}[t]||'fa-file'}
+    function tBg(t){return{'3d':'abg-3d',audio:'abg-audio',pdf:'abg-pdf',file:'abg-file'}[t]||''}
+
+    /* ===== المعرض ===== */
+    function renderG(){
+        var list=works.filter(function(w){if(curF==='all')return true;if(curF==='other')return w.type==='pdf'||w.type==='file';return w.type===curF});
+        cA.textContent='('+works.length+')';grid.innerHTML='';
+        if(!list.length){emp.style.display='block';return}emp.style.display='none';
+        list.forEach(function(w,vi){
+            var ri=works.indexOf(w),c=document.createElement('div');c.className='wk rv';var m='';
+            if(w.type==='image'&&w.thUrl)m='<img src="'+w.thUrl+'" class="cmm" alt="'+w.nm+'" loading="lazy">';
+            else if(w.type==='video'&&w.thUrl)m='<video src="'+w.url+'" class="cmm" muted preload="metadata"></video><div class="cpi"><i class="fas fa-play" style="margin-right:-2px"></i></div>';
+            else{var bg=tBg(w.type),ic=tI(w.type);m='<div class="cicon '+(bg?' '+bg:'')+'"><i class="fas '+ic+'"></i></div>'}
+            var a='<div class="cac"><button class="cbtn vb" data-i="'+ri+'"><i class="fas fa-eye" style="margin-left:3px"></i>عرض</button></div>';
+            if(isAd)a='<div class="cac"><button class="cbtn vb" data-i="'+ri+'"><i class="fas fa-eye" style="margin-left:3px"></i>عرض</button><button class="cbtn ed eb" data-i="'+ri+'"><i class="fas fa-pen" style="margin-left:3px"></i>تعديل</button><button class="cbtn dl db" data-i="'+ri+'"><i class="fas fa-trash" style="margin-left:3px"></i>حذف</button></div>';
+            c.innerHTML='<div class="cmw">'+m+'<div class="cov"><div class="cob"><i class="fas fa-expand"></i></div></div></div><div class="cin"><span class="ctp ti-'+w.type+'">'+tL(w.type)+'</span><h3 class="cnm">'+w.nm+'</h3>'+(w.ds?'<p class="cds">'+w.ds+'</p>':'')+'</div>'+a;
+            grid.appendChild(c);setTimeout(function(){c.classList.add('vs')},vi*60);
+        });
+        grid.querySelectorAll('.vb').forEach(function(b){b.addEventListener('click',function(){openV(+this.dataset.i)})});
+        grid.querySelectorAll('.db').forEach(function(b){b.addEventListener('click',function(){delW(+this.dataset.i)})});
+        grid.querySelectorAll('.eb').forEach(function(b){b.addEventListener('click',function(){editW(+this.dataset.i)})});
+        grid.querySelectorAll('.cov').forEach(function(o){o.addEventListener('click',function(){var b=this.closest('.wk').querySelector('.vb');if(b)openV(+b.dataset.i)})});
+    }
+    async function delW(i){
+        var w = works[i];
+        if(!confirm('متأكد تريد تحذف هذا العمل؟ 🗑️')) return;
+        try {
+            if(window.supabaseClient && w.id) {
+                await window.supabaseClient.from('projects').delete().eq('id', w.id);
+            } else if(db && w.id){
+                try{ await dbDel('works', w.id) }catch(e){}
+            }
+            works.splice(i,1);
+            renderG();
+            updStor();
+            toast('تم الحذف بنجاح');
+        } catch(e) {
+            console.error(e);
+            toast('حدث خطأ بالحذف', 'error');
+        }
+    }
+    flts.addEventListener('click',function(e){var b=e.target.closest('.fb');if(!b)return;flts.querySelectorAll('.fb').forEach(function(x){x.classList.remove('ac')});b.classList.add('ac');curF=b.dataset.f;renderG()});
+
+    /* ===== عرض ===== */
+    function openV(i){var w=works[i];if(!w)return;var h='';
+        if(w.type==='image'&&w.url)h='<div style="padding:.8rem"><img src="'+w.url+'" style="max-width:90vw;max-height:70vh;border-radius:12px;display:block;margin:0 auto" loading="lazy"></div>';
+        else if(w.type==='video'&&w.url)h='<div style="padding:.8rem"><video src="'+w.url+'" controls autoplay style="max-width:90vw;max-height:70vh;border-radius:12px;display:block;margin:0 auto"></video></div>';
+        else if(w.type==='audio'&&w.url)h='<div class="fv"><i class="fas fa-music" style="color:#22c55e"></i><audio src="'+w.url+'" controls autoplay style="width:100%;margin-top:.8rem"></audio><h3 style="margin-top:1rem">'+w.nm+'</h3>'+(w.ds?'<p class="fm">'+w.ds+'</p>':'')+'</div>';
+        else if(w.type==='3d')h='<div class="t3b" id="t3b"></div>';
+        else if(w.type==='pdf'&&w.url)h='<div style="padding:.8rem"><iframe src="'+w.url+'" style="width:90vw;height:70vh;border:none;border-radius:12px;display:block;margin:0 auto;background:#fff"></iframe></div>';
+        else h='<div class="fv"><i class="fas '+tI(w.type)+'"></i><h3>'+w.nm+'</h3>'+(w.ds?'<p class="fm">'+w.ds+'</p>':'')+(w.fsz?'<p class="fm">الحجم: '+w.fsz+'</p>':'')+(w.fn?'<p class="fm">'+w.fn+'</p>':'')+(w.url?'<a href="'+w.url+'" download="'+(w.fn||w.nm)+'" class="dlb"><i class="fas fa-download"></i>تحميل</a>':'')+'</div>';
+        if(w.type!=='audio'&&w.type!=='file'&&w.type!=='pdf')h+='<div style="padding:.8rem 1.2rem 1.2rem"><h3 style="font-size:1.1rem;font-weight:900;margin-bottom:.3rem">'+w.nm+'</h3>'+(w.ds?'<p style="color:var(--mt);line-height:1.6;font-size:.9rem">'+w.ds+'</p>':'')+'</div>';
+        vD.innerHTML=h;vM.classList.add('op');document.body.style.overflow='hidden';if(w.type==='3d')initT3(w);
+    }
+    function closeV(){vM.classList.remove('op');document.body.style.overflow='';if(t3c){t3c();t3c=null}}
+    vX.addEventListener('click',closeV);vM.addEventListener('click',function(e){if(e.target===vM)closeV()});
+
+    /* ===== Three.js ===== */
+    function initT3(w){function tryI(){if(!window._tr){setTimeout(tryI,150);return}var box=document.getElementById('t3b');if(!box)return;var T=window.THREE,sc=new T.Scene();sc.fog=new T.FogExp2(0,0.04);var cam=new T.PerspectiveCamera(50,box.clientWidth/box.clientHeight,.1,1000),ren=new T.WebGLRenderer({antialias:true});ren.setSize(box.clientWidth,box.clientHeight);ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.setClearColor(0x050510,1);box.appendChild(ren.domElement);sc.add(new T.AmbientLight(0xffffff,.5));var d1=new T.DirectionalLight(0x00d4ff,1.5);d1.position.set(5,5,5);sc.add(d1);var d2=new T.DirectionalLight(0xff2d75,.8);d2.position.set(-5,3,-5);sc.add(d2);sc.add(new T.PointLight(0xa855f7,1,20));var gH=new T.GridHelper(20,30,0x00d4ff,0x111133);gH.position.y=-1.5;gH.material.opacity=.3;gH.material.transparent=true;sc.add(gH);var ctrl=new window.OrbitControls(cam,ren.domElement);ctrl.enableDamping=true;ctrl.dampingFactor=.06;cam.position.set(0,2,6);ctrl.update();var rf=null,ms=[];function an(){rf=requestAnimationFrame(an);ms.forEach(function(m){m.rotation.x+=.004;m.rotation.y+=.006});ctrl.update();ren.render(sc,cam)}an();if(w.url){new window.GLTFLoader().load(w.url,function(g){var m=g.scene,b=new T.Box3().setFromObject(m),c=b.getCenter(new T.Vector3()),s=b.getSize(new T.Vector3()),mx=Math.max(s.x,s.y,s.z,.001),sc2=4/mx;m.scale.setScalar(sc2);m.position.sub(c.multiplyScalar(sc2));sc.add(m);ms.push(m)},undefined,function(){addD(sc,T,ms)})}else addD(sc,T,ms);t3c=function(){if(rf)cancelAnimationFrame(rf);ctrl.dispose();ren.dispose();if(box.contains(ren.domElement))box.removeChild(ren.domElement)}}tryI()}
+    function addD(sc,T,ms){var s1=new T.Mesh(new T.IcosahedronGeometry(1.2,1),new T.MeshStandardMaterial({color:0x00d4ff,metalness:.8,roughness:.15,wireframe:true}));s1.position.set(0,.5,0);sc.add(s1);ms.push(s1);var s2=new T.Mesh(new T.OctahedronGeometry(.7,0),new T.MeshStandardMaterial({color:0xff2d75,metalness:.8,roughness:.2}));s2.position.set(2.5,.8,-1);sc.add(s2);ms.push(s2);var s3=new T.Mesh(new T.TorusKnotGeometry(.5,.18,100,16),new T.MeshStandardMaterial({color:0xa855f7,metalness:.8,roughness:.2}));s3.position.set(-2.5,.6,-1);sc.add(s3);ms.push(s3);var s4=new T.Mesh(new T.TorusGeometry(.6,.2,16,50),new T.MeshStandardMaterial({color:0x00d4ff,metalness:.6,roughness:.3}));s4.position.set(0,-.5,2);sc.add(s4);ms.push(s4)}
+
+    /* ===== إضافة/تعديل ===== */
+    function openAdd(){aTi.textContent='إضافة عمل جديد';aSb.innerHTML='<i class="fas fa-plus" style="margin-left:6px"></i>إضافة';$('eId').value='';fSk.textContent='(اختياري)';aFm.reset();fIf.style.display='none';selF=null;aM.classList.add('op');document.body.style.overflow='hidden'}
+    function editW(i){var w=works[i];if(!w)return;aTi.textContent='تعديل العمل';aSb.innerHTML='<i class="fas fa-save" style="margin-left:6px"></i>حفظ';$('eId').value=i;$('wN').value=w.nm;$('wD').value=w.ds||'';fSk.textContent='(اتركه فارغاً للإبقاء على الملف)';fIf.style.display='none';selF=null;aM.classList.add('op');document.body.style.overflow='hidden'}
+    function closeA(){aM.classList.remove('op');document.body.style.overflow='';aFm.reset();fIf.style.display='none';selF=null}
+    fab.addEventListener('click',openAdd);aX.addEventListener('click',closeA);aM.addEventListener('click',function(e){if(e.target===aM)closeA()});
+    fDr.addEventListener('click',function(){wF.click()});fDr.addEventListener('dragover',function(e){e.preventDefault();fDr.classList.add('dg')});fDr.addEventListener('dragleave',function(){fDr.classList.remove('dg')});fDr.addEventListener('drop',function(e){e.preventDefault();fDr.classList.remove('dg');if(e.dataTransfer.files.length)pF(e.dataTransfer.files[0])});wF.addEventListener('change',function(){if(this.files.length)pF(this.files[0])});
+    function pF(f){selF=f;fIf.style.display='block';fIf.textContent=f.name+' ('+fmtSz(f.size)+')'}
+    function normalizeFile(f){return f instanceof Blob?f:new Blob([f],{type:f.type})}
+    aFm.addEventListener('submit', async function(e){
+        e.preventDefault();
+        var nm=$('wN').value.trim(), ds=$('wD').value.trim(), eid=$('eId').value;
+        if(!nm){toast('أدخل اسم العمل','error');return}
+        var isE = eid !== '';
+        var tp = selF ? gFT(selF) : (isE ? works[+eid].type : 'file');
+
+        var oldBtn = aSb.innerHTML;
+        aSb.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-left:6px"></i> جاري الحفظ...';
+        aSb.style.opacity = '0.7'; aSb.disabled = true;
+
+        try {
+            let imageUrl = isE ? works[+eid].eUrl : null;
+
+            // If Supabase is not initialized, offer to paste anon key for permanent storage
+            if(!window.supabaseClient){
+                var goSup = confirm('لم يتم تهيئة Supabase. لحفظ الملفات بشكل دائم على السحابة اضغط نعم لصق مفتاح anon الآن.\n(سيُخزّن محلياً مؤقتاً إن اخترت لا)');
+                if(goSup){
+                    try{
+                        var p = prompt('الصق هنا مفتاح Supabase anon (يبداً بـ eyJ...):','');
+                        if(p && p.trim().startsWith('eyJ')){
+                            try{ localStorage.setItem('supabaseAnon', p.trim()) }catch(e){}
+                            initSupabase();
+                            // small delay to allow init
+                            await new Promise(r=>setTimeout(r,600));
+                        } else {
+                            toast('مفتاح غير صالح، سيتم الحفظ محلياً مؤقتاً','error');
+                        }
+                    }catch(e){console.warn(e)}
+                } else {
+                    // continue with local storage
+                }
+            }
+
+            if (selF) {
+                if(window.supabaseClient){
+                    const fileName = Date.now() + '-' + selF.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+                    await window.supabaseClient.storage.from('project-images').upload(fileName, selF);
+                    const { data } = window.supabaseClient.storage.from('project-images').getPublicUrl(fileName);
+                    imageUrl = data.publicUrl;
+                } else {
+                    // Save file to IndexedDB as data URL for local persistence
+                    imageUrl = await new Promise(function(ok,no){
+                        var r=new FileReader();r.onload=function(){ok(r.result)};r.onerror=function(e){no(e)};r.readAsDataURL(selF);
+                    });
+                }
+            }
+
+            if (!isE) {
+                if(window.supabaseClient){
+                    const { data, error } = await window.supabaseClient.from('projects').insert([{ title: nm, description: ds, image_url: imageUrl, type: tp }]).select();
+                    if (data && data[0]) {
+                        works.push({ id: data[0].id, nm: nm, ds: ds, type: tp, eUrl: imageUrl, eTh: imageUrl, url: imageUrl, thUrl: imageUrl });
+                    }
+                } else {
+                    // store locally in IndexedDB
+                    var localObj = { nm: nm, ds: ds, type: tp, eUrl: imageUrl, eTh: imageUrl, url: imageUrl, thUrl: imageUrl, fn: selF?selF.name:null, fsz: selF?selF.size:null };
+                    try{ localObj.id = await dbAdd('works', localObj); }catch(e){}
+                    works.push(localObj);
+                }
+            } else {
+                var w = works[+eid];
+                if(window.supabaseClient && w.id){
+                    await window.supabaseClient.from('projects').update({ title: nm, description: ds, image_url: imageUrl, type: tp }).eq('id', w.id);
+                    w.nm = nm; w.ds = ds; w.type = tp; w.eUrl = imageUrl; w.url = imageUrl; w.eTh = imageUrl; w.thUrl = imageUrl;
+                } else {
+                    // update local DB
+                    w.nm = nm; w.ds = ds; w.type = tp; w.eUrl = imageUrl; w.url = imageUrl; w.eTh = imageUrl; w.thUrl = imageUrl;
+                    try{ await dbPut('works', w); }catch(e){}
+                }
+            }
+            renderG();
+            closeA();
+            toast(isE ? 'تم التعديل بنجاح ✏️' : 'تمت الإضافة بنجاح 🎉');
+        } catch (err) {
+            console.error(err);
+            toast('حدث خطأ أثناء الحفظ!', 'error');
+        } finally {
+            aSb.innerHTML = oldBtn;
+            aSb.style.opacity = '1';
+            aSb.disabled = false;
+        }
+    });
+
+    /* ===== موسيقى ===== */
+    mTg.addEventListener('click',function(e){e.stopPropagation();muP.classList.toggle('op')});
+    document.addEventListener('click',function(e){if(!e.target.closest('.mw'))muP.classList.remove('op')});
+    mAd.addEventListener('click',function(){mFi.click()});
+    mFi.addEventListener('change', async function(){
+        for(var i=0; i<this.files.length; i++){
+            var f = this.files[i];
+            if(f.type.startsWith('audio/')){
+                toast('جاري رفع الموسيقى... 🎵');
+                if(window.supabaseClient){
+                    const fileName = Date.now() + '-' + f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+                    await window.supabaseClient.storage.from('project-images').upload(fileName, f);
+                    const { data: urlData } = window.supabaseClient.storage.from('project-images').getPublicUrl(fileName);
+                    const { data } = await window.supabaseClient.from('tracks').insert([{ nm: f.name.replace(/\.[^/.]+$/,''), url: urlData.publicUrl }]).select();
+                    if(data && data[0]) tracks.push(data[0]);
+                } else {
+                    // save locally in IndexedDB as data URL
+                    const dataUrl = await new Promise(function(ok,no){var r=new FileReader();r.onload=function(){ok(r.result)};r.onerror=function(e){no(e)};r.readAsDataURL(f)});
+                    try{ var id = await dbAdd('tracks',{nm: f.name.replace(/\.[^/.]+$/,''), url: dataUrl}); if(id) tracks.push({id:id,nm:f.name.replace(/\.[^/.]+$/,''),url:dataUrl}); }catch(e){console.warn(e)}
+                }
+            }
+        }
+        rTr();
+        this.value='';
+        if(tracks.length && curTk===-1) plTk(0);
+        toast('تم إضافة الموسيقى بنجاح');
+    });
+    aud.addEventListener('timeupdate',function(){if(aud.duration)mBr.style.width=(aud.currentTime/aud.duration*100)+'%'});
+    function rTr(){mLi.innerHTML='';mPr.classList.toggle('op',tracks.length>0);tracks.forEach(function(t,i){var d=document.createElement('div');d.className='mtk'+(i===curTk?' act':'');d.innerHTML='<button class="mpb" data-i="'+i+'"><i class="fas '+(i===curTk&&isPl?'fa-pause':'fa-play')+'"></i></button><span class="mnm">'+t.nm+'</span><button class="mrm" data-i="'+i+'"><i class="fas fa-times"></i></button>';mLi.appendChild(d)});mLi.querySelectorAll('.mpb').forEach(function(b){b.addEventListener('click',function(){var i=+this.dataset.i;if(i===curTk&&isPl)paTk();else plTk(i)})});mLi.querySelectorAll('.mrm').forEach(function(b){b.addEventListener('click',function(){rmTk(+this.dataset.i)})})}
+    function plTk(i){if(i<0||i>=tracks.length)return;curTk=i;aud.src=tracks[i].url;aud.play().catch(function(){});isPl=true;mTg.innerHTML='<i class="fas fa-volume-up"></i>';rTr();aud.onended=function(){var n=(curTk+1)%tracks.length;if(tracks.length>1)plTk(n);else paTk()}}
+    function paTk(){aud.pause();isPl=false;mTg.innerHTML='<i class="fas fa-music"></i>';rTr()}
+    async function rmTk(i){var t=tracks[i];if(t.id&&db)try{await dbDel('tracks',t.id)}catch(e){}tracks.splice(i,1);if(i===curTk){paTk();curTk=-1;if(tracks.length)plTk(0)}else if(i<curTk)curTk--;buildURLs();rTr()}
+
+    /* ===== Escape ===== */
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(vM.classList.contains('op'))closeV();if(aM.classList.contains('op'))closeA();if(socM.classList.contains('op')){socM.classList.remove('op');document.body.style.overflow=''}if(pwM.classList.contains('op')){pwM.classList.remove('op');document.body.style.overflow=''}}});
+
+    /* ===== بدء ===== */
+    iBtn.addEventListener('click',function(){intro.classList.add('out');app.classList.add('show');if(iRf)cancelAnimationFrame(iRf);renderG()});
+    load().catch(function(e){console.error(e);ldOv.classList.add('hid')});
+
+    })();
+    </script>
+</body> 
+</html> 
