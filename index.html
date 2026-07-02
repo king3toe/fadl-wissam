@@ -737,34 +737,16 @@
         try {
             let imageUrl = isE ? works[+eid].eUrl : null;
 
-            // If Supabase is not initialized, offer to paste anon key for permanent storage
-            if(!window.supabaseClient){
-                var goSup = confirm('لم يتم تهيئة Supabase. لحفظ الملفات بشكل دائم على السحابة اضغط نعم لصق مفتاح anon الآن.\n(سيُخزّن محلياً مؤقتاً إن اخترت لا)');
-                if(goSup){
-                    try{
-                        var p = prompt('الصق هنا مفتاح Supabase anon (يبداً بـ eyJ...):','');
-                        if(p && p.trim().startsWith('eyJ')){
-                            try{ localStorage.setItem('supabaseAnon', p.trim()) }catch(e){}
-                            initSupabase();
-                            // small delay to allow init
-                            await new Promise(r=>setTimeout(r,600));
-                        } else {
-                            toast('مفتاح غير صالح، سيتم الحفظ محلياً مؤقتاً','error');
-                        }
-                    }catch(e){console.warn(e)}
-                } else {
-                    // continue with local storage
-                }
-            }
-
             if (selF) {
-                if(window.supabaseClient){
+                if (window.supabaseClient) {
                     const fileName = Date.now() + '-' + selF.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-                    await window.supabaseClient.storage.from('project-images').upload(fileName, selF);
+                    const { data: uploadData, error: uploadErr } = await window.supabaseClient.storage.from('project-images').upload(fileName, selF);
+                    if (uploadErr) {
+                        throw new Error('خطأ برفع الصورة: ' + uploadErr.message);
+                    }
                     const { data } = window.supabaseClient.storage.from('project-images').getPublicUrl(fileName);
                     imageUrl = data.publicUrl;
                 } else {
-                    // Save file to IndexedDB as data URL for local persistence
                     imageUrl = await new Promise(function(ok,no){
                         var r=new FileReader();r.onload=function(){ok(r.result)};r.onerror=function(e){no(e)};r.readAsDataURL(selF);
                     });
@@ -772,34 +754,39 @@
             }
 
             if (!isE) {
-                if(window.supabaseClient){
+                if (window.supabaseClient) {
                     const { data, error } = await window.supabaseClient.from('projects').insert([{ title: nm, description: ds, image_url: imageUrl, type: tp }]).select();
+                    if (error) {
+                        throw new Error('خطأ بحفظ البيانات: ' + error.message);
+                    }
                     if (data && data[0]) {
                         works.push({ id: data[0].id, nm: nm, ds: ds, type: tp, eUrl: imageUrl, eTh: imageUrl, url: imageUrl, thUrl: imageUrl });
                     }
                 } else {
-                    // store locally in IndexedDB
                     var localObj = { nm: nm, ds: ds, type: tp, eUrl: imageUrl, eTh: imageUrl, url: imageUrl, thUrl: imageUrl, fn: selF?selF.name:null, fsz: selF?selF.size:null };
-                    try{ localObj.id = await dbAdd('works', localObj); }catch(e){}
+                    try { localObj.id = await dbAdd('works', localObj); }catch(e){ console.warn(e) }
                     works.push(localObj);
                 }
             } else {
                 var w = works[+eid];
-                if(window.supabaseClient && w.id){
-                    await window.supabaseClient.from('projects').update({ title: nm, description: ds, image_url: imageUrl, type: tp }).eq('id', w.id);
+                if (window.supabaseClient && w.id) {
+                    const { error } = await window.supabaseClient.from('projects').update({ title: nm, description: ds, image_url: imageUrl, type: tp }).eq('id', w.id);
+                    if (error) {
+                        throw new Error('خطأ بتعديل البيانات: ' + error.message);
+                    }
                     w.nm = nm; w.ds = ds; w.type = tp; w.eUrl = imageUrl; w.url = imageUrl; w.eTh = imageUrl; w.thUrl = imageUrl;
                 } else {
-                    // update local DB
                     w.nm = nm; w.ds = ds; w.type = tp; w.eUrl = imageUrl; w.url = imageUrl; w.eTh = imageUrl; w.thUrl = imageUrl;
-                    try{ await dbPut('works', w); }catch(e){}
+                    try { await dbPut('works', w); }catch(e){ console.warn(e) }
                 }
             }
+
             renderG();
             closeA();
             toast(isE ? 'تم التعديل بنجاح ✏️' : 'تمت الإضافة بنجاح 🎉');
         } catch (err) {
-            console.error(err);
-            toast('حدث خطأ أثناء الحفظ!', 'error');
+            console.error('Supabase Error:', err);
+            toast(err.message || 'حدث خطأ أثناء الحفظ!', 'error');
         } finally {
             aSb.innerHTML = oldBtn;
             aSb.style.opacity = '1';
