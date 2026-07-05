@@ -101,19 +101,19 @@
         .mw{position:fixed;bottom:16px;left:16px;z-index:4000;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
         .mtg{width:46px;height:46px;border-radius:50%;border:2px solid var(--cy);background:rgba(5,5,16,.92);color:var(--cy);font-size:1.1rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--cyg);transition:all .3s}
         .mtg:hover{background:var(--cy);color:var(--bg)}
-        .mpn{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:.8rem;width:250px;max-height:280px;overflow-y:auto;display:none}
+        .mpn{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:.8rem;width:280px;max-height:320px;overflow-y:auto;display:none;backdrop-filter:blur(12px)}
         .mpn.op{display:block}
-        .mpt{font-size:.8rem;font-weight:700;color:var(--mt);margin-bottom:.6rem}
-        .mtk{display:flex;align-items:center;gap:8px;padding:6px;border-radius:8px;margin-bottom:3px;border:1px solid transparent;transition:all .25s}
+        .mpt{font-size:.85rem;font-weight:700;color:var(--tx);margin-bottom:.6rem;display:flex;align-items:center;gap:6px}
+        .mtk{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;margin-bottom:4px;border:1px solid transparent;transition:all .25s;cursor:pointer}
         .mtk:hover{background:var(--cd)}.mtk.act{background:#00d4ff0c;border-color:#00d4ff30}
-        .mpb{width:32px;height:32px;border-radius:50%;border:1px solid var(--bd);background:0 0;color:var(--cy);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;font-size:.75rem}
+        .mpb{width:34px;height:34px;border-radius:50%;border:1px solid var(--bd);background:0 0;color:var(--cy);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s;font-size:.8rem}
         .mtk.act .mpb{background:var(--cy);color:var(--bg);border-color:var(--cy)}
-        .mnm{font-size:.8rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-        .mrm{color:var(--mt);background:0 0;border:none;transition:color .3s;font-size:.75rem;padding:4px}.mrm:hover{color:#ff4444}
-        .mpr{width:100%;height:3px;background:var(--bd);border-radius:3px;margin-top:6px;overflow:hidden;display:none}.mpr.op{display:block}
-        .mbr{height:100%;background:var(--cy);border-radius:3px;width:0%;transition:width .3s linear}
-        .mad{width:100%;padding:8px;margin-top:6px;border:1px dashed var(--bd);border-radius:8px;background:0 0;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:.8rem;transition:all .3s}
-        .mad:hover{border-color:var(--cy);color:var(--cy)}
+        .mnm{font-size:.85rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx)}
+        .mrm{color:var(--mt);background:0 0;border:none;transition:color .3s;font-size:.75rem;padding:4px;cursor:pointer}.mrm:hover{color:#ff4444}
+        .mpr{width:100%;height:4px;background:var(--bd);border-radius:4px;margin-top:8px;overflow:hidden;display:none}.mpr.op{display:block}
+        .mbr{height:100%;background:linear-gradient(90deg,var(--cy),var(--pk));border-radius:4px;width:0%;transition:width .3s linear}
+        .mad{width:100%;padding:10px;margin-top:8px;border:1px dashed var(--bd);border-radius:10px;background:0 0;color:var(--mt);font-family:'Tajawal',sans-serif;font-size:.85rem;transition:all .3s;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+        .mad:hover{border-color:var(--cy);color:var(--cy);background:#00d4ff08}
         .fab{position:fixed;bottom:16px;right:16px;z-index:4000;width:52px;height:52px;border-radius:50%;border:2px solid var(--cy);background:var(--bg);color:var(--cy);font-size:1.3rem;display:flex;align-items:center;justify-content:center;box-shadow:var(--cyg);transition:all .4s cubic-bezier(.23,1,.32,1)}
         .fab:hover{background:var(--cy);color:var(--bg);transform:rotate(90deg)scale(1.1)}
         .fab.hid{display:none}
@@ -222,12 +222,12 @@
         <div class="ab" id="aBar" style="display:none"><span><i class="fas fa-shield-alt"></i> وضع الإدارة</span><span style="opacity:.6;font-weight:400" id="storInfo"></span></div>
         <main><div class="gg" id="grid"></div><div class="emp" id="emp" style="display:none"><i class="fas fa-folder-open"></i><p style="font-size:1rem;font-weight:700;margin-bottom:.4rem">لا توجد أعمال بعد</p><p>اضغط على <span style="color:var(--cy)">+</span> لإضافة عملك الأول</p></div></main>
         <footer class="sft"><div class="ft-soc" id="ftSoc"></div><span style="color:var(--cy)">FADL</span></footer>
-        <div class="mw" id="muW"><div class="mpn" id="muP"><div class="mpt"><i class="fas fa-headphones" style="margin-left:5px"></i>الموسيقى</div><div id="mLi"></div><div class="mpr" id="mPr"><div class="mbr" id="mBr"></div></div><button class="mad" id="mAd"><i class="fas fa-plus" style="margin-left:5px"></i>إضافة ملف صوتي</button><input type="file" id="mFi" accept="audio/*" multiple style="display:none"></div><button class="mtg" id="mTg" aria-label="الموسيقى"><i class="fas fa-music"></i></button></div>
+        <div class="mw" id="muW"><div class="mpn" id="muP"><div class="mpt"><i class="fas fa-headphones"></i><span>مشغل الموسيقى</span></div><div id="mLi"></div><div class="mpr" id="mPr"><div class="mbr" id="mBr"></div></div><button class="mad" id="mAd"><i class="fas fa-plus-circle"></i><span>إضافة أغنية</span></button><input type="file" id="mFi" accept="audio/*" multiple style="display:none"></div><button class="mtg" id="mTg" aria-label="الموسيقى"><i class="fas fa-music"></i></button></div>
         <button class="fab hid" id="fab" aria-label="إضافة عمل"><i class="fas fa-plus"></i></button>
     </div>
 
     <div class="mo" id="vM"><div class="mbx" id="vB"><button class="mx" id="vX"><i class="fas fa-times"></i></button><div id="vD"></div></div></div>
-    <div class="mo" id="pwM"><div class="mbx pww"><div class="pwic"><i class="fas fa-user-shield"></i></div><h3 style="font-size:1.2rem;font-weight:900;margin-bottom:.4rem">لوحة التحكم</h3><p style="color:var(--mt);font-size:.85rem;margin-bottom:1.2rem;line-height:1.6">سجل الدخول بدون كلمة مرور عبر رابط الدخول المُرسل إلى بريدك الإلكتروني.</p><div class="fi" style="text-align:center;font-size:1rem;margin-bottom:.8rem;background:var(--cd);border:1px solid var(--bd);border-radius:10px;color:var(--tx);padding:12px;">fadalwsam605@gmail.com</div><p style="color:var(--mt);font-size:.78rem;margin-top:-.4rem;margin-bottom:.8rem;line-height:1.4">يُفضل فتح هذه الصفحة عبر خادم محلي (http://localhost) بدلاً من فتح الملف مباشرةً.</p><p style="color:#ff4444;font-size:.78rem;margin-top:.5rem;display:none" id="pwE">حدث خطأ أثناء التحقق</p><button class="fsb" id="pwB" style="width:100%;margin-top:.6rem">إرسال رابط الدخول</button></div></div>
+    <div class="mo" id="pwM"><div class="mbx pww"><div class="pwic"><i class="fas fa-user-shield"></i></div><h3 style="font-size:1.2rem;font-weight:900;margin-bottom:.4rem">لوحة التحكم</h3><p style="color:var(--mt);font-size:.85rem;margin-bottom:1.2rem;line-height:1.6">سجل الدخول كمشرف عبر الرمز السري أو رابط الدخول المُرسل إلى بريدك الإلكتروني.</p><p style="color:var(--mt);font-size:.78rem;margin-top:-.4rem;margin-bottom:.8rem;line-height:1.4">يُفضل فتح هذه الصفحة عبر خادم محلي (http://localhost) بدلاً من فتح الملف مباشرةً.</p><p style="color:#ff4444;font-size:.78rem;margin-top:.5rem;display:none" id="pwE">حدث خطأ أثناء التحقق</p><button class="fsb" id="pwB" style="width:100%;margin-top:.6rem">إرسال رابط الدخول</button></div></div>
     <div class="mo" id="aM"><div class="mbx add-box"><button class="mx" id="aX"><i class="fas fa-times"></i></button><h3 style="font-size:1.15rem;font-weight:900;color:var(--cy);margin-bottom:1.2rem" id="aTi">إضافة عمل جديد</h3><form id="aFm" class="flex flex-col gap-4"><input type="hidden" id="eId" value=""><div><label class="fl">اسم العمل</label><input type="text" class="fi" id="wN" required placeholder="مثال: تصميم واجهة"></div><div><label class="fl">الوصف <span style="opacity:.5">(اختياري)</span></label><textarea class="fta" id="wD" placeholder="وصف مختصر..."></textarea></div><div><label class="fl">الملف <span style="opacity:.5" id="fSk">(اختياري)</span></label><div class="fdr" id="fDr"><i class="fas fa-cloud-upload-alt" style="font-size:1.5rem;margin-bottom:6px;display:block"></i><p style="font-size:.85rem">اسحب الملف أو اضغط للاختيار</p></div><input type="file" id="wF" style="display:none"><p id="fIf" style="font-size:.78rem;color:var(--cy);margin-top:6px;display:none"></p></div><button type="submit" class="fsb" id="aSb" style="width:100%"><i class="fas fa-plus" style="margin-left:6px"></i>إضافة العمل</button></form></div></div>
 
     <!-- مودال الروابط -->
@@ -259,9 +259,12 @@
     const supabaseUrl = 'https://hrnxpzkdxlaqzwrkpvdq.supabase.co';
     // المفتاح العام (publishable/anon) من Supabase
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhybnhwemtkeGxhcXp3cmtwdmRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5OTM2ODIsImV4cCI6MjA5ODU2OTY4Mn0.dgz3ysV2OG9Na21-ailKLFhcuZ_hdbEOQ0oCqQlSpzc';
-    const ADMIN_EMAIL = 'fadalwsam605@gmail.com';
     // رمز الإدارة المحلي مخفي هنا بعكس السلسلة: 'fadalking998' معكوساً
     const LOCAL_ADMIN_REV = '899gnikladaf';
+    // بريد الأدمن محفوظ بشكل مشفر باستخدام ROT13
+    const ADMIN_EMAIL_ROT13 = 'snqnyjfnz605@tznvy.pbz';
+    function rot13(str) { return str.replace(/[a-zA-Z]/g, c => String.fromCharCode((c.charCodeAt(0) <= 90 ? ((c.charCodeAt(0) - 65 + 13) % 26 + 65) : ((c.charCodeAt(0) - 97 + 13) % 26 + 97)))); }
+    const ADMIN_EMAIL = rot13(ADMIN_EMAIL_ROT13);
     var supabaseClient = null;
     function initSupabase(){
         // Ensure anon key is available in localStorage for quicker init on other sessions
@@ -563,9 +566,9 @@
         pwE.style.display = 'none';
         try {
             if (!window.supabaseClient) throw new Error('Supabase غير مهيأ');
+            // استخدام بريد الأدمن المخزن بشكل مشفر فقط
             var email = ADMIN_EMAIL;
-            if (!email || email.includes('اكتب_ايميلك_هنا')) throw new Error('حدد ADMIN_EMAIL في الكود');
-
+            
             // Validate anon key format (basic check)
             try {
                 if (typeof supabaseKey !== 'string' || supabaseKey.length < 30 || !supabaseKey.startsWith('eyJ')) {
@@ -795,37 +798,82 @@
     });
 
     /* ===== موسيقى ===== */
-    mTg.addEventListener('click',function(e){e.stopPropagation();muP.classList.toggle('op')});
+    mTg.addEventListener('click',function(e){e.stopPropagation();muP.classList.toggle('op');this.blur()});
     document.addEventListener('click',function(e){if(!e.target.closest('.mw'))muP.classList.remove('op')});
     mAd.addEventListener('click',function(){mFi.click()});
     mFi.addEventListener('change', async function(){
+        if(this.files.length===0)return;
         for(var i=0; i<this.files.length; i++){
             var f = this.files[i];
             if(f.type.startsWith('audio/')){
-                toast('جاري رفع الموسيقى... 🎵');
-                if(window.supabaseClient){
-                    const fileName = Date.now() + '-' + f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
-                    await window.supabaseClient.storage.from('project-images').upload(fileName, f);
-                    const { data: urlData } = window.supabaseClient.storage.from('project-images').getPublicUrl(fileName);
-                    const { data } = await window.supabaseClient.from('tracks').insert([{ nm: f.name.replace(/\.[^/.]+$/,''), url: urlData.publicUrl }]).select();
-                    if(data && data[0]) tracks.push(data[0]);
-                } else {
-                    // save locally in IndexedDB as data URL
-                    const dataUrl = await new Promise(function(ok,no){var r=new FileReader();r.onload=function(){ok(r.result)};r.onerror=function(e){no(e)};r.readAsDataURL(f)});
-                    try{ var id = await dbAdd('tracks',{nm: f.name.replace(/\.[^/.]+$/,''), url: dataUrl}); if(id) tracks.push({id:id,nm:f.name.replace(/\.[^/.]+$/,''),url:dataUrl}); }catch(e){console.warn(e)}
+                toast('جاري رفع الأغنية... 🎵');
+                try{
+                    if(window.supabaseClient){
+                        const fileName = 'tracks/' + Date.now() + '-' + f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+                        const { error: uploadError } = await window.supabaseClient.storage.from('project-images').upload(fileName, f,{upsert:true});
+                        if(uploadError) throw uploadError;
+                        const { data: urlData } = window.supabaseClient.storage.from('project-images').getPublicUrl(fileName);
+                        const trackName = f.name.replace(/\.[^/.]+$/,'');
+                        const { data, error: insertError } = await window.supabaseClient.from('tracks').insert([{ nm: trackName, url: urlData.publicUrl }]).select();
+                        if(insertError) throw insertError;
+                        if(data && data[0]) tracks.push(data[0]);
+                    } else {
+                        const dataUrl = await new Promise(function(ok,no){var r=new FileReader();r.onload=function(){ok(r.result)};r.onerror=function(e){no(e)};r.readAsDataURL(f)});
+                        try{ var id = await dbAdd('tracks',{nm: f.name.replace(/\.[^/.]+$/,''), url: dataUrl}); if(id) tracks.push({id:id,nm:f.name.replace(/\.[^/.]+$/,''),url:dataUrl}); }catch(e){console.warn(e)}
+                    }
+                    toast('تم إضافة الأغنية بنجاح ✨');
+                }catch(err){
+                    console.error(err);
+                    toast('حدث خطأ أثناء الرفع','error');
                 }
             }
         }
         rTr();
         this.value='';
         if(tracks.length && curTk===-1) plTk(0);
-        toast('تم إضافة الموسيقى بنجاح');
     });
     aud.addEventListener('timeupdate',function(){if(aud.duration)mBr.style.width=(aud.currentTime/aud.duration*100)+'%'});
-    function rTr(){mLi.innerHTML='';mPr.classList.toggle('op',tracks.length>0);tracks.forEach(function(t,i){var d=document.createElement('div');d.className='mtk'+(i===curTk?' act':'');d.innerHTML='<button class="mpb" data-i="'+i+'"><i class="fas '+(i===curTk&&isPl?'fa-pause':'fa-play')+'"></i></button><span class="mnm">'+t.nm+'</span><button class="mrm" data-i="'+i+'"><i class="fas fa-times"></i></button>';mLi.appendChild(d)});mLi.querySelectorAll('.mpb').forEach(function(b){b.addEventListener('click',function(){var i=+this.dataset.i;if(i===curTk&&isPl)paTk();else plTk(i)})});mLi.querySelectorAll('.mrm').forEach(function(b){b.addEventListener('click',function(){rmTk(+this.dataset.i)})})}
-    function plTk(i){if(i<0||i>=tracks.length)return;curTk=i;aud.src=tracks[i].url;aud.play().catch(function(){});isPl=true;mTg.innerHTML='<i class="fas fa-volume-up"></i>';rTr();aud.onended=function(){var n=(curTk+1)%tracks.length;if(tracks.length>1)plTk(n);else paTk()}}
+    aud.addEventListener('loadedmetadata',function(){toast('جاهز للتشغيل ▶️')});
+    function rTr(){
+        mLi.innerHTML='';
+        mPr.classList.toggle('op',tracks.length>0);
+        if(tracks.length===0){
+            mLi.innerHTML='<div style="text-align:center;color:var(--mt);padding:20px 0;font-size:.85rem"><i class="fas fa-music" style="display:block;margin-bottom:8px;opacity:.3"></i>لا توجد أغاني حالياً</div>';
+            return;
+        }
+        tracks.forEach(function(t,i){
+            var d=document.createElement('div');
+            d.className='mtk'+(i===curTk?' act':'');
+            d.innerHTML='<button class="mpb" data-i="'+i+'"><i class="fas '+(i===curTk&&isPl?'fa-pause':'fa-play')+'"></i></button><span class="mnm">'+t.nm+'</span><button class="mrm" data-i="'+i+'"><i class="fas fa-times"></i></button>';
+            mLi.appendChild(d)
+        });
+        mLi.querySelectorAll('.mpb').forEach(function(b){b.addEventListener('click',function(){var i=+this.dataset.i;if(i===curTk&&isPl)paTk();else plTk(i)})});
+        mLi.querySelectorAll('.mrm').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();rmTk(+this.dataset.i)})})
+    }
+    function plTk(i){
+        if(i<0||i>=tracks.length)return;
+        curTk=i;
+        aud.src=tracks[i].url;
+        aud.play().then(function(){
+            isPl=true;
+            mTg.innerHTML='<i class="fas fa-volume-up"></i>';
+            rTr();
+        }).catch(function(err){
+            console.warn('Playback error:',err);
+            toast('تعذر تشغيل الأغنية','error');
+        });
+        aud.onended=function(){var n=(curTk+1)%tracks.length;if(tracks.length>1)plTk(n);else paTk()}
+    }
     function paTk(){aud.pause();isPl=false;mTg.innerHTML='<i class="fas fa-music"></i>';rTr()}
-    async function rmTk(i){var t=tracks[i];if(t.id&&db)try{await dbDel('tracks',t.id)}catch(e){}tracks.splice(i,1);if(i===curTk){paTk();curTk=-1;if(tracks.length)plTk(0)}else if(i<curTk)curTk--;buildURLs();rTr()}
+    async function rmTk(i){
+        var t=tracks[i];
+        if(t.id&&db)try{await dbDel('tracks',t.id)}catch(e){}
+        tracks.splice(i,1);
+        if(i===curTk){paTk();curTk=-1;if(tracks.length)plTk(0)}
+        else if(i<curTk)curTk--;
+        buildURLs();
+        rTr()
+    }
 
     /* ===== Escape ===== */
     document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(vM.classList.contains('op'))closeV();if(aM.classList.contains('op'))closeA();if(socM.classList.contains('op')){socM.classList.remove('op');document.body.style.overflow=''}if(pwM.classList.contains('op')){pwM.classList.remove('op');document.body.style.overflow=''}}});
